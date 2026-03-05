@@ -934,69 +934,73 @@
 
   // ✅ UPDATED: name + overall side-by-side, big + bold color
   function renderFinalReport(){
-    const overall = computeOverall();
-    const name = state.studentName ?? "";
+  const overall = computeOverall();                // percent (0–100)
+  const overall20 = Math.round(overall * 0.2 * 10) / 10; // out of 20, 1 decimal
+  const name = state.studentName ?? "";
 
-    levelTitle.textContent = "Final Score Report";
+  levelTitle.textContent = "Final Score Report";
 
-    // Put big name + big overall at the TOP (this prints nicely)
-    levelMeta.innerHTML = `
-      <div class="reportHeader">
-        <div>
-          <div class="small">Student</div>
-          <div class="nameBig">${escapeHtml(name)}</div>
-        </div>
-        <div style="min-width:220px;">
-          <span class="scoreLabel">Overall Score</span>
-          <div class="scoreBig">${overall}%</div>
+  // Big name + big overall at the TOP (prints nicely)
+  levelMeta.innerHTML = `
+    <div class="reportHeader">
+      <div>
+        <div class="small">Student</div>
+        <div class="nameBig">${escapeHtml(name)}</div>
+      </div>
+      <div style="min-width:260px;">
+        <span class="scoreLabel">Overall Score</span>
+        <div class="scoreBig">
+          ${overall}% <span style="font-size:18px; font-weight:900;">(${overall20}/20)</span>
         </div>
       </div>
-      <div class="small" style="margin-top:8px;">
-        Scores below are your <b>best score</b> for each level on this device.
-      </div>
-    `;
+    </div>
+    <div class="small" style="margin-top:8px;">
+      Scores below are your <b>best score</b> for each level on this device.
+    </div>
+  `;
 
-    quizArea.innerHTML = "";
+  quizArea.innerHTML = "";
 
-    const grid = document.createElement("div");
-    grid.className = "scoresGrid";
+  const grid = document.createElement("div");
+  grid.className = "scoresGrid";
 
-    for(let i=1;i<=8;i++){
-      const lvl = levels.find(x=>x.id===i);
-      const best = state.best[i] == null ? 0 : state.best[i];
+  for(let i=1;i<=8;i++){
+    const lvl = levels.find(x=>x.id===i);
+    const best = state.best[i] == null ? 0 : state.best[i];
 
-      const left = document.createElement("div");
-      left.className = "cell";
-      left.innerHTML = `<b>Level ${i}</b> — ${escapeHtml(lvl.topic)}`;
+    const left = document.createElement("div");
+    left.className = "cell";
+    left.innerHTML = `<b>Level ${i}</b> — ${escapeHtml(lvl.topic)}`;
 
-      const right = document.createElement("div");
-      right.className = "cell right";
-      right.textContent = `${best}%`;
+    const right = document.createElement("div");
+    right.className = "cell right";
+    right.textContent = `${best}%`;
 
-      grid.appendChild(left);
-      grid.appendChild(right);
-    }
-
-    quizArea.appendChild(grid);
-
-    const actions = document.createElement("div");
-    actions.className = "actions noPrint";
-
-    const printBtn = document.createElement("button");
-    printBtn.className = "btn primary";
-    printBtn.textContent = "Print / Save as PDF";
-    printBtn.addEventListener("click", ()=> window.print());
-
-    const backBtn = document.createElement("button");
-    backBtn.className = "btn";
-    backBtn.textContent = "Back to Levels";
-    backBtn.addEventListener("click", ()=> selectLevel(8));
-
-    actions.appendChild(printBtn);
-    actions.appendChild(backBtn);
-    quizArea.appendChild(document.createElement("div")).className = "divider";
-    quizArea.appendChild(actions);
+    grid.appendChild(left);
+    grid.appendChild(right);
   }
+
+  quizArea.appendChild(grid);
+
+  const actions = document.createElement("div");
+  actions.className = "actions noPrint";
+
+  const printBtn = document.createElement("button");
+  printBtn.className = "btn primary";
+  printBtn.textContent = "Print / Save as PDF";
+  printBtn.addEventListener("click", ()=> window.print());
+
+  const backBtn = document.createElement("button");
+  backBtn.className = "btn";
+  backBtn.textContent = "Back to Levels";
+  backBtn.addEventListener("click", ()=> selectLevel(8));
+
+  actions.appendChild(printBtn);
+  actions.appendChild(backBtn);
+
+  quizArea.appendChild(document.createElement("div")).className = "divider";
+  quizArea.appendChild(actions);
+}
 
   function shuffle(arr){
     for(let i=arr.length-1;i>0;i--){
