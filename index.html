@@ -1,0 +1,1129 @@
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Byte Bistro ☕ ArrayList Mastery (Autograded)</title>
+  <style>
+    :root{
+      --bg:#0b1020; --card:#121a33; --muted:#9aa6c2; --text:#e9eeff;
+      --accent:#ffcc66; --accent2:#6ee7ff; --danger:#ff6b6b; --ok:#2ce59b;
+      --border: rgba(255,255,255,.12);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+    }
+    body.light{
+      --bg:#f7f8fc; --card:#ffffff; --muted:#56607a; --text:#11162a;
+      --border: rgba(0,0,0,.12);
+      --shadow: 0 10px 30px rgba(20, 30, 60, .12);
+    }
+    body{
+      margin:0; font-family:var(--font);
+      background:
+        radial-gradient(1200px 700px at 20% 0%, rgba(110,231,255,.18), transparent 55%),
+        radial-gradient(900px 600px at 90% 10%, rgba(255,204,102,.18), transparent 55%),
+        var(--bg);
+      color:var(--text);
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .wrap{ max-width:1050px; margin:0 auto; padding:24px; }
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between; gap:14px;
+      padding:18px; border:1px solid var(--border); border-radius:var(--radius);
+      background:rgba(255,255,255,.03); box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+    .brand h1{ margin:0; font-size:20px; }
+    .brand .sub{ color:var(--muted); font-size:13px; margin-top:2px; }
+    .pillrow{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end; }
+    .pill{
+      display:flex; align-items:center; gap:8px; padding:8px 10px;
+      border:1px solid var(--border); border-radius:999px; background:rgba(255,255,255,.04);
+      font-size:13px; color:var(--muted);
+      max-width: 250px;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .pill b{ color:var(--text); }
+    .btn{
+      border:1px solid var(--border); background:rgba(255,255,255,.06);
+      color:var(--text); padding:10px 12px; border-radius:12px;
+      cursor:pointer; font-weight:650;
+    }
+    .btn:hover{ background:rgba(255,255,255,.10); }
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(255,204,102,.28), rgba(110,231,255,.22));
+      border-color: rgba(255,255,255,.18);
+    }
+    .btn.danger{ border-color: rgba(255,107,107,.4); background: rgba(255,107,107,.12); }
+
+    .grid{ display:grid; grid-template-columns: 340px 1fr; gap:18px; margin-top:18px; }
+    @media (max-width: 900px){ .grid{ grid-template-columns: 1fr; } }
+
+    .card{
+      background:rgba(255,255,255,.03); border:1px solid var(--border);
+      border-radius:var(--radius); box-shadow:var(--shadow); padding:16px;
+    }
+    .levels{ display:flex; flex-direction:column; gap:10px; }
+    .levelBtn{
+      width:100%;
+      display:flex; gap:10px; align-items:flex-start; justify-content:space-between;
+      padding:12px; border-radius:14px; border:1px solid var(--border);
+      background:rgba(255,255,255,.04); cursor:pointer; text-align:left;
+    }
+    .levelBtn:hover{ background:rgba(255,255,255,.08); }
+    .levelBtn[disabled]{ opacity:.55; cursor:not-allowed; }
+    .lvlTitle{ display:flex; flex-direction:column; gap:2px; }
+    .lvlTitle .name{ font-weight:800; }
+    .lvlTitle .topic{ color:var(--muted); font-size:12.5px; }
+    .badge{ font-size:12px; padding:6px 8px; border-radius:999px; border:1px solid var(--border); color:var(--muted); }
+    .badge.ok{ color: var(--ok); border-color: rgba(44,229,155,.35); background: rgba(44,229,155,.10); }
+    .badge.lock{ color: var(--accent); border-color: rgba(255,204,102,.35); background: rgba(255,204,102,.10); }
+
+    .content h2{ margin:0 0 6px 0; }
+    .meta{ color:var(--muted); font-size:13px; line-height:1.45; }
+    .divider{ height:1px; background:var(--border); margin:14px 0; }
+
+    .qWrap{ display:flex; flex-direction:column; gap:14px; margin-top:12px; }
+    .qCard{ padding:14px; border:1px solid var(--border); border-radius:14px; background:rgba(255,255,255,.03); }
+    .qStem{ font-weight:750; margin-bottom:10px; }
+    .code{ font-family:var(--mono); font-size:13px; padding:10px; border-radius:12px; border:1px solid var(--border);
+           background:rgba(0,0,0,.22); overflow:auto; }
+    body.light .code{ background: rgba(0,0,0,.06); }
+    .choices{ display:grid; gap:8px; margin-top:10px; }
+    .choice{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:10px; border:1px solid var(--border); border-radius:12px;
+      background:rgba(255,255,255,.03); cursor:pointer;
+    }
+    .choice:hover{ background:rgba(255,255,255,.07); }
+    .choice input{ margin-top:2px; }
+    .choice.correct{ border-color: rgba(44,229,155,.35); background: rgba(44,229,155,.10); }
+    .choice.wrong{ border-color: rgba(255,107,107,.35); background: rgba(255,107,107,.10); }
+
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; align-items:center; }
+    .notice{ padding:12px; border-radius:14px; border:1px solid var(--border); background:rgba(255,255,255,.03); }
+    .notice.ok{ border-color: rgba(44,229,155,.35); background: rgba(44,229,155,.10); }
+    .notice.bad{ border-color: rgba(255,107,107,.35); background: rgba(255,107,107,.10); }
+    .small{ font-size:12.5px; color:var(--muted); }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
+
+    .modalBack{
+      position:fixed; inset:0; background:rgba(0,0,0,.6);
+      display:none; align-items:center; justify-content:center; padding:18px; z-index:50;
+    }
+    .modal{
+      width:min(900px, 100%); max-height:85vh; overflow:auto;
+      background: var(--card); border:1px solid var(--border); border-radius:var(--radius);
+      box-shadow: var(--shadow); padding:16px;
+    }
+    .modal h3{ margin:0 0 10px 0; }
+    .log{ font-family:var(--mono); font-size:12px; white-space:pre-wrap; background:rgba(0,0,0,.22);
+          border:1px solid var(--border); border-radius:12px; padding:12px; }
+    body.light .log{ background: rgba(0,0,0,.06); }
+    .kbd{ font-family:var(--mono); font-size:12px; padding:2px 6px; border:1px solid var(--border); border-radius:8px; }
+
+    .field{ display:flex; flex-direction:column; gap:6px; margin-top:10px; }
+    .input{
+      padding:12px; border-radius:12px; border:1px solid var(--border);
+      background:rgba(255,255,255,.06); color:var(--text);
+      font-size:14px;
+    }
+    body.light .input{ background: rgba(0,0,0,.04); color: var(--text); }
+
+    .scoresGrid{
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:10px;
+      margin-top:12px;
+    }
+    .cell{
+      padding:10px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:rgba(255,255,255,.03);
+    }
+    .cell.right{ text-align:right; font-weight:800; }
+
+    /* Report header styles */
+    .reportHeader{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+    .nameBig{
+      font-weight:950;
+      font-size:30px;
+      letter-spacing:.2px;
+      line-height:1.1;
+      color: var(--accent2);
+    }
+    .scoreBig{
+      font-weight:950;
+      font-size:34px;
+      letter-spacing:.2px;
+      line-height:1.1;
+      color: var(--accent);
+      text-align:right;
+    }
+    .scoreLabel{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+      margin-bottom:4px;
+    }
+
+    .noPrint{ }
+    @media print{
+      body{
+        background:#fff !important;
+        color:#000 !important;
+      }
+      .topbar, .grid > .card:first-child { display:none !important; } /* hide sidebar + top bar */
+      .wrap{ max-width:none; padding:0; }
+      .grid{ display:block; margin:0; }
+      .card{
+        box-shadow:none !important;
+        border:none !important;
+        background:#fff !important;
+        padding:0 !important;
+      }
+      .notice, .cell{
+        background:#fff !important;
+        border:1px solid rgba(0,0,0,.18) !important;
+      }
+      .divider{ background: rgba(0,0,0,.15) !important; }
+      .small, .meta{ color:#222 !important; }
+      .btn, .actions, .noPrint{ display:none !important; }
+      .nameBig{ color:#000 !important; font-size:32px !important; }
+      .scoreBig{ color:#000 !important; font-size:36px !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar noPrint">
+      <div class="brand">
+        <h1>Byte Bistro ☕ <span style="opacity:.9">ArrayList Mastery</span></h1>
+        <div class="sub">Autograded MCQ levels • retry-until-mastered • aligned to the AP subset used in class</div>
+      </div>
+      <div class="pillrow">
+        <div class="pill">Student: <b id="pillName">—</b></div>
+        <div class="pill">Level: <b id="pillLevel">1</b></div>
+        <div class="pill">Best: <b id="pillBest">—</b></div>
+        <div class="pill">Unlocked: <b id="pillUnlocked">1</b>/8</div>
+        <button class="btn" id="toggleTheme">Toggle theme</button>
+        <button class="btn danger" id="resetAll">Reset</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card noPrint">
+        <div class="row">
+          <div>
+            <div style="font-weight:900; font-size:15px;">Levels</div>
+            <div class="small">Need <b id="masteryLabel">80%</b> to unlock next level.</div>
+          </div>
+          <div class="badge" id="saveBadge">Saved ✓</div>
+        </div>
+        <div class="divider"></div>
+        <div class="levels" id="levelList"></div>
+
+        <div class="divider"></div>
+        <div class="small">
+          Teacher mode: type <span class="kbd">TEACHER</span> anywhere to open logs & export.
+        </div>
+      </div>
+
+      <div class="card content">
+        <h2 id="levelTitle">Level</h2>
+        <div class="meta" id="levelMeta"></div>
+
+        <div class="divider"></div>
+
+        <div id="quizArea"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAME LOCK MODAL -->
+  <div class="modalBack" id="nameBack">
+    <div class="modal">
+      <h3>Enter your name (locked)</h3>
+      <div class="small">
+        Your name will be saved on this device and can’t be changed unless you click <b>Reset</b>.
+      </div>
+      <div class="field">
+        <label class="small" for="studentName">Student name</label>
+        <input class="input" id="studentName" placeholder="First Last" maxlength="40" />
+        <div class="small">Tip: Use the same name you use in class.</div>
+      </div>
+      <div class="actions">
+        <button class="btn primary" id="saveName">Start</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEACHER MODE -->
+  <div class="modalBack" id="modalBack">
+    <div class="modal">
+      <div class="row" style="align-items:flex-start;">
+        <div>
+          <h3>Teacher Mode</h3>
+          <div class="small">Export attempt history, see progress, or reset.</div>
+        </div>
+        <button class="btn" id="closeModal">Close</button>
+      </div>
+      <div class="divider"></div>
+      <div class="actions">
+        <button class="btn primary" id="exportJson">Export Progress (JSON)</button>
+        <button class="btn" id="copyJson">Copy JSON to Clipboard</button>
+        <button class="btn danger" id="resetAttempts">Clear Attempt History</button>
+      </div>
+      <div class="divider"></div>
+      <div class="log" id="teacherLog">Loading…</div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const MASTERY = 0.80;
+  const QUIZ_SIZE = 5;
+
+  const levels = [
+    {
+      id: 1,
+      name: "Level 1 — Open the Order Book",
+      topic: "Creating an ArrayList • import • why lists",
+      intro: "Coach Byte hands you an empty order book. You need to set up the ArrayList correctly so the café can start taking orders.",
+      bank: [
+        q("Which import line is needed to use ArrayList?",
+          ["import java.util.ArrayList;","import java.lang.ArrayList;","import java.io.ArrayList;"], 0,
+          "ArrayList is in the java.util package."
+        ),
+        q("Which creates an empty ArrayList named orders?",
+          ["ArrayList orders = new ArrayList();","ArrayList orders = ArrayList();","ArrayList orders = new ArrayList;"], 0,
+          "You must use new ArrayList() with parentheses."
+        ),
+        q("Why would you use an ArrayList instead of an array in many problems?",
+          ["It can grow/shrink as you add/remove elements.","It stores primitives only.","It has fixed size for speed."], 0,
+          "ArrayLists resize automatically, unlike arrays."
+        ),
+        q("Which method returns how many items are currently in the list?",
+          ["size()","length","count()"], 0,
+          "ArrayList uses size(), not length."
+        ),
+        q("If the list is empty, size() returns…",
+          ["0","-1","1"], 0,
+          "Empty list has 0 elements."
+        ),
+        q("Which statement is true?",
+          ["Indexing starts at 0.","Indexing starts at 1.","Indexing depends on the data type."], 0,
+          "The first element is always at index 0."
+        ),
+      ]
+    },
+    {
+      id: 2,
+      name: "Level 2 — Add to the Order Board",
+      topic: "add(item) vs add(index, item) • append vs insertion",
+      intro: "Customers start ordering fast. You must add items without mixing up the line.",
+      bank: [
+        q("What does orders.add(\"Latte\") do?",
+          ["Appends \"Latte\" to the end.","Inserts \"Latte\" at index 0.","Replaces the last element with \"Latte\"."], 0,
+          "add(item) appends to the end."
+        ),
+        q("If orders = [\"Tea\", \"Mocha\"], what is orders after orders.add(1, \"Latte\")?",
+          ["[\"Tea\", \"Latte\", \"Mocha\"]","[\"Latte\", \"Tea\", \"Mocha\"]","[\"Tea\", \"Mocha\", \"Latte\"]"], 0,
+          "add(index, item) inserts and shifts right."
+        ),
+        q("When is orders.add(i, item) invalid?",
+          ["If i < 0 or i > orders.size()","If i == orders.size()","Only if i is odd"], 0,
+          "Valid insertion indices are 0 through size() inclusive."
+        ),
+        q("Given orders size is 3, which call is valid?",
+          ["orders.add(3, \"Scone\")","orders.add(4, \"Scone\")","orders.add(-1, \"Scone\")"], 0,
+          "Index 3 equals size() and inserts at end."
+        ),
+        q("Main difference between add(item) and add(index, item)?",
+          ["One appends; the other inserts at a position.","One is for Strings; the other is for ints.","They always do the same thing."], 0,
+          "Insertion shifts elements; appending doesn’t."
+        ),
+        q("If orders is empty, what does orders.add(0, \"Espresso\") do?",
+          ["Works and makes [\"Espresso\"]","Throws an error because list is empty","Creates a null at index 0 then sets it"], 0,
+          "You can insert at index 0 when size() is 0."
+        ),
+      ]
+    },
+    {
+      id: 3,
+      name: "Level 3 — Read & Fix Orders",
+      topic: "get(index) • set(index, value)",
+      intro: "A customer says you wrote the wrong drink. Time to read an order and update it.",
+      bank: [
+        q("What does orders.get(0) return?",
+          ["The first element","The last element","The size of the list"], 0,
+          "get(index) returns the element at that index."
+        ),
+        q("Which statement changes the item at index 2 to \"Chai\"?",
+          ["orders.set(2, \"Chai\");","orders.get(2, \"Chai\");","orders.add(2, \"Chai\");"], 0,
+          "set replaces; add inserts; get reads."
+        ),
+        q("If orders = [\"Tea\", \"Mocha\"], what happens with orders.set(2, \"Latte\")?",
+          ["IndexOutOfBoundsException","Adds \"Latte\" to the end","Replaces \"Mocha\""], 0,
+          "Valid indices for set are 0..size()-1."
+        ),
+        q("Which is true about set(i, x)?",
+          ["It returns the old value that was replaced.","It increases the list size by 1.","It removes the element at i."], 0,
+          "set returns the previous value at that index."
+        ),
+        q("If orders = [\"A\", \"B\", \"C\"], what is returned by orders.get(1)?",
+          ["\"B\"","\"A\"","\"C\""], 0,
+          "Indexing starts at 0."
+        ),
+        q("Safest way to access the last element?",
+          ["orders.get(orders.size() - 1)","orders.get(orders.size())","orders.get(-1)"], 0,
+          "Last index is size()-1."
+        ),
+      ]
+    },
+    {
+      id: 4,
+      name: "Level 4 — Count & Loop",
+      topic: "size() • classic for-loop • for-each",
+      intro: "You’re doing inventory. You need to loop through orders safely and efficiently.",
+      bank: [
+        q("If orders has 5 items, what does orders.size() return?",
+          ["5","4","6"], 0,
+          "size() returns the number of elements."
+        ),
+        q("Which loop visits every element by index?",
+          ["for (int i = 0; i < orders.size(); i++)","for (int i = 0; i <= orders.size(); i++)","for (int i = 1; i < orders.size(); i++)"], 0,
+          "Use i < size() to avoid out of bounds."
+        ),
+        q("Which is a valid enhanced for-each loop (for a list of Strings)?",
+          ["for (String s : orders) { }","for (int i : orders) { }","for (String s = orders) { }"], 0,
+          "For-each uses (Type var : collection)."
+        ),
+        q("When do you typically prefer for-each over indexed for?",
+          ["When you don't need the index.","When you want to insert elements while looping.","When you must skip the first element."], 0,
+          "For-each is clean when index isn't needed."
+        ),
+        q("What is wrong with: for (int i = 0; i <= orders.size(); i++) orders.get(i);",
+          ["It tries to access index size(), which is invalid.","It skips index 0.","It never runs."], 0,
+          "Last index is size()-1."
+        ),
+        q("If you need to change elements by index, which loop is best?",
+          ["Classic for-loop with i","For-each loop always","None of them can change elements"], 0,
+          "For-each doesn’t give you an index directly."
+        ),
+      ]
+    },
+    {
+      id: 5,
+      name: "Level 5 — Remove (The AP Trap)",
+      topic: "remove(index) vs remove(object)",
+      intro: "A customer cancels. If you remove the wrong thing, you delete the wrong order. Classic AP trap.",
+      bank: [
+        q("Which statement removes the element at index 1?",
+          ["orders.remove(1);","orders.remove(\"1\");","orders.delete(1);"], 0,
+          "remove(index) removes by position."
+        ),
+        q("For an ArrayList of Integers, why is remove tricky on the AP Exam?",
+          ["Because remove(1) could mean index 1, not value 1.","Because Integer can’t be stored in ArrayList.","Because size() changes randomly."], 0,
+          "Overloading makes it confusing with numbers."
+        ),
+        q("Which removes the first element in a list?",
+          ["remove(0)","remove(1)","remove(size())"], 0,
+          "Index 0 is the first element."
+        ),
+        q("What does remove(object) typically return in Java?",
+          ["true if removed, false otherwise","the removed object","the index removed"], 0,
+          "remove(object) returns a boolean."
+        ),
+        q("After removing an element at index i, what happens to later elements?",
+          ["They shift left (their indices decrease by 1).","They shift right.","They stay in the same index positions."], 0,
+          "Elements after i move left to fill the gap."
+        ),
+        q("If a list has 3 items and you remove index 2, what happens?",
+          ["You remove the last item.","You remove the first item.","It always errors."], 0,
+          "Last index is size()-1, so index 2 is last when size is 3."
+        ),
+      ]
+    },
+    {
+      id: 6,
+      name: "Level 6 — Find the Missing Ticket",
+      topic: "indexOf() • -1 sentinel • safe 'not found' logic",
+      intro: "A VIP order slipped somewhere. You need to locate it with indexOf() and handle the “not found” case safely.",
+      bank: [
+        q("What does orders.indexOf(\"Latte\") return if \"Latte\" is NOT in the list?",
+          ["-1","0","throws an exception"], 0,
+          "-1 is the sentinel value meaning “not found”."
+        ),
+        q("If orders = [\"Tea\", \"Latte\", \"Mocha\"], what is orders.indexOf(\"Mocha\")?",
+          ["2","3","-1"], 0,
+          "Indexing starts at 0, so \"Mocha\" is at index 2."
+        ),
+        q("What is the safest check after calling int idx = orders.indexOf(x); ?",
+          ["if (idx != -1) { ... }","if (idx == 0) { ... }","if (idx == orders.size()) { ... }"], 0,
+          "Only proceed when idx is not -1."
+        ),
+        q("If orders has duplicates of \"Tea\", what does orders.indexOf(\"Tea\") return?",
+          ["The index of the first \"Tea\"","The index of the last \"Tea\"","The number of times \"Tea\" appears"], 0,
+          "indexOf returns the first occurrence."
+        ),
+        q("If idx = orders.indexOf(\"Scone\") returns -1, which is true?",
+          ["\"Scone\" is not in the list.","\"Scone\" is at the last index.","The list must be empty."], 0,
+          "-1 means the item wasn’t found (even if the list isn’t empty)."
+        ),
+        q("Which line safely prints the item only if it exists?",
+          [
+            "int idx = orders.indexOf(x); if (idx != -1) System.out.println(orders.get(idx));",
+            "int idx = orders.indexOf(x); System.out.println(orders.get(idx));",
+            "int idx = orders.indexOf(x); if (idx == -1) System.out.println(orders.get(idx));"
+          ], 0,
+          "You must guard get(idx) with idx != -1."
+        ),
+      ]
+    },
+    {
+      id: 7,
+      name: "Level 7 — Safe Traversal",
+      topic: "Removing while iterating • avoiding the forward-iteration bug",
+      intro: "You’re clearing out sold-out items. If you iterate forward and remove, you may skip elements. Fix it!",
+      bank: [
+        q("Why can removing items while iterating forward cause bugs?",
+          ["Indices shift left and you can skip the next element.","size() becomes negative.","get() stops working forever."], 0,
+          "After removal, elements shift left; i++ can jump over an item."
+        ),
+        q("A common safe strategy when removing by index in a loop is:",
+          ["Loop from the end toward 0.","Use i++ twice each iteration.","Never remove anything."], 0,
+          "Backward loops avoid index shifting problems."
+        ),
+        q("If you must loop forward and remove, what’s one fix?",
+          ["Decrement i after a removal (i--).","Increment i by 2 always.","Call size() once then ignore changes."], 0,
+          "After removal, re-check the new item at that index."
+        ),
+        q("Which is a safe backward loop header?",
+          ["for (int i = orders.size()-1; i >= 0; i--)","for (int i = 0; i < orders.size(); i++)","for (int i = orders.size(); i >= 0; i--)"], 0,
+          "Start at size()-1 and go down to 0."
+        ),
+        q("If orders = [A, X, X, B] and you remove all \"X\" safely, the result should be:",
+          ["[A, B]","[A, X, B]","[A, X]"], 0,
+          "Both X values should be removed."
+        ),
+        q("What is the risk of using for-each while removing from the same list?",
+          ["It can cause an exception in Java.","It automatically removes correctly.","It makes the list immutable."], 0,
+          "Modifying during for-each is unsafe."
+        ),
+      ]
+    },
+    {
+      id: 8,
+      name: "Boss Level — Rush Hour Check",
+      topic: "Mixed AP-style ArrayList questions (subset aligned)",
+      intro: "Rush hour hits. Prove you can handle anything — then see your final score report.",
+      bank: [
+        q("If a list has n elements, what is the last valid index?",
+          ["n-1","n","0"], 0,
+          "Indices run 0 to size()-1."
+        ),
+        q("Which method changes an element without changing size?",
+          ["set(i, x)","add(x)","remove(i)"], 0,
+          "set replaces; size stays the same."
+        ),
+        q("What does indexOf(x) return when x is not found?",
+          ["-1","0","throws an exception"], 0,
+          "-1 is the sentinel value for “not found”."
+        ),
+        q("indexOf returns -1 when:",
+          ["Not found","Found at start","List is empty only"], 0,
+          "-1 indicates the item wasn’t found."
+        ),
+        q("Which is safest for removing multiple items by index in a loop?",
+          ["Loop backward","Loop forward with i++","Use get() only"], 0,
+          "Backward avoids skipping."
+        ),
+        q("If size() is 4, which index is invalid?",
+          ["4","3","0"], 0,
+          "Valid indices: 0..3."
+        ),
+        q("What is wrong with i <= list.size() in a loop that calls get(i)?",
+          ["It will try to access index size(), which is out of bounds.","It skips the last element.","It runs forever."], 0,
+          "Last index is size()-1."
+        ),
+        q("If you remove an element, size() will:",
+          ["Decrease by 1","Stay the same","Increase by 1"], 0,
+          "Removing reduces the number of elements."
+        ),
+        q("Best loop when you don't need indices?",
+          ["for (String x : list)","for (int i=0; i<list.size(); i++)","while(true)"], 0,
+          "For-each is clean for read-only traversal."
+        ),
+        q("Calling get(size()) will:",
+          ["Throw an out-of-bounds exception","Return the last element","Return null"], 0,
+          "Last index is size()-1."
+        ),
+      ]
+    }
+  ];
+
+  function q(stem, choices, correctIndex, explanation, codeBlock=null){
+    return { stem, choices, correctIndex, explanation, codeBlock };
+  }
+
+  const KEY = "bytebistro_mcq_v5_print_header";
+  const defaultState = {
+    studentName: null,
+    unlocked: 1,
+    best: Array(9).fill(null),
+    theme: "dark",
+    attempts: []
+  };
+  let state = loadState();
+
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(KEY);
+      if(!raw) return structuredClone(defaultState);
+      const parsed = JSON.parse(raw);
+      return {
+        ...structuredClone(defaultState),
+        ...parsed,
+        best: parsed.best ?? structuredClone(defaultState.best),
+        attempts: parsed.attempts ?? []
+      };
+    }catch{
+      return structuredClone(defaultState);
+    }
+  }
+  function saveState(){
+    localStorage.setItem(KEY, JSON.stringify(state));
+    flashSaved();
+    renderTop();
+    renderLevels();
+  }
+  function flashSaved(){
+    const b = document.getElementById("saveBadge");
+    b.textContent = "Saved ✓";
+    b.style.opacity = "1";
+    setTimeout(()=>{ b.style.opacity = ".85"; }, 600);
+  }
+
+  const levelList = document.getElementById("levelList");
+  const levelTitle = document.getElementById("levelTitle");
+  const levelMeta = document.getElementById("levelMeta");
+  const quizArea = document.getElementById("quizArea");
+  const pillName = document.getElementById("pillName");
+  const pillLevel = document.getElementById("pillLevel");
+  const pillBest = document.getElementById("pillBest");
+  const pillUnlocked = document.getElementById("pillUnlocked");
+  const masteryLabel = document.getElementById("masteryLabel");
+  masteryLabel.textContent = Math.round(MASTERY*100) + "%";
+
+  let currentLevelId = 1;
+  let currentQuiz = null;
+
+  const nameBack = document.getElementById("nameBack");
+  const studentNameInput = document.getElementById("studentName");
+  const saveNameBtn = document.getElementById("saveName");
+
+  function openNameModal(){
+    nameBack.style.display = "flex";
+    setTimeout(()=>studentNameInput.focus(), 50);
+  }
+  function closeNameModal(){ nameBack.style.display = "none"; }
+  function normalizeName(s){ return s.trim().replace(/\s+/g, " "); }
+
+  saveNameBtn.addEventListener("click", ()=>{
+    const v = normalizeName(studentNameInput.value);
+    if(v.length < 2){ alert("Please enter your full name."); return; }
+    state.studentName = v;
+    saveState();
+    closeNameModal();
+    renderTop();
+    selectLevel(1);
+  });
+  studentNameInput.addEventListener("keydown", (e)=>{ if(e.key === "Enter") saveNameBtn.click(); });
+
+  function renderTop(){
+    pillName.textContent = state.studentName ?? "—";
+    pillLevel.textContent = currentLevelId;
+    const best = state.best[currentLevelId];
+    pillBest.textContent = best == null ? "—" : `${best}%`;
+    pillUnlocked.textContent = `${state.unlocked}/8`;
+  }
+
+  function renderLevels(){
+    levelList.innerHTML = "";
+    levels.forEach(lvl=>{
+      const btn = document.createElement("button");
+      btn.className = "levelBtn";
+      const locked = lvl.id > state.unlocked;
+      btn.disabled = locked;
+
+      const left = document.createElement("div");
+      left.className = "lvlTitle";
+      left.innerHTML = `<div class="name">${escapeHtml(lvl.name)}</div><div class="topic">${escapeHtml(lvl.topic)}</div>`;
+
+      const badge = document.createElement("div");
+      badge.className = "badge";
+      const best = state.best[lvl.id];
+      if(locked){
+        badge.classList.add("lock");
+        badge.textContent = "Locked";
+      } else if(best != null && best >= Math.round(MASTERY*100)){
+        badge.classList.add("ok");
+        badge.textContent = `Mastered • ${best}%`;
+      } else if(best != null){
+        badge.textContent = `Best • ${best}%`;
+      } else {
+        badge.textContent = "Not tried";
+      }
+
+      btn.appendChild(left);
+      btn.appendChild(badge);
+      btn.addEventListener("click", ()=>selectLevel(lvl.id));
+      levelList.appendChild(btn);
+    });
+  }
+
+  function selectLevel(id){
+    currentLevelId = id;
+    currentQuiz = null;
+    renderTop();
+    renderLevelContent();
+  }
+
+  function renderLevelContent(){
+    const lvl = levels.find(x=>x.id===currentLevelId);
+    levelTitle.textContent = lvl.name;
+    levelMeta.innerHTML = `
+      <div><b>Mission:</b> ${escapeHtml(lvl.intro)}</div>
+      <div class="small" style="margin-top:6px;">
+        Attempt has <b>${QUIZ_SIZE}</b> questions. Pass with <b>${Math.round(MASTERY*100)}%</b> or higher.
+        Retry as many times as you want — questions reshuffle each attempt.
+      </div>
+    `;
+    startNewAttempt();
+  }
+
+  function startNewAttempt(){
+  const lvl = levels.find(x=>x.id===currentLevelId);
+
+  // Shuffle question order
+  const pool = shuffle([...lvl.bank]);
+
+  // Take QUIZ_SIZE and shuffle answer choices for each selected question
+  const questions = pool
+    .slice(0, Math.min(QUIZ_SIZE, pool.length))
+    .map(q => shuffleChoicesPreserveAnswer(q));
+
+  currentQuiz = { questions, picks: {}, submitted:false, results:null };
+  renderQuiz();
+}
+
+  function renderQuiz(){
+    quizArea.innerHTML = "";
+
+    const header = document.createElement("div");
+    header.className = "notice";
+    header.innerHTML = `
+      <div class="row">
+        <div><b>Quiz:</b> Choose the best answer for each question.</div>
+        <div class="small">Level ${currentLevelId}</div>
+      </div>
+    `;
+    quizArea.appendChild(header);
+
+    const qWrap = document.createElement("div");
+    qWrap.className = "qWrap";
+
+    currentQuiz.questions.forEach((qq, idx)=>{
+      const qCard = document.createElement("div");
+      qCard.className = "qCard";
+
+      const stem = document.createElement("div");
+      stem.className = "qStem";
+      stem.textContent = `${idx+1}. ${qq.stem}`;
+      qCard.appendChild(stem);
+
+      if(qq.codeBlock){
+        const code = document.createElement("div");
+        code.className = "code";
+        code.textContent = qq.codeBlock;
+        qCard.appendChild(code);
+      }
+
+      const choices = document.createElement("div");
+      choices.className = "choices";
+
+      qq.choices.forEach((choiceText, cidx)=>{
+        const label = document.createElement("label");
+        label.className = "choice";
+
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = `q_${idx}`;
+        input.value = cidx;
+        input.checked = (currentQuiz.picks[idx] === cidx);
+        input.addEventListener("change", ()=>{ currentQuiz.picks[idx] = cidx; });
+
+        const text = document.createElement("div");
+        text.innerHTML = `<div>${escapeHtml(choiceText)}</div>`;
+
+        label.appendChild(input);
+        label.appendChild(text);
+        choices.appendChild(label);
+      });
+
+      qCard.appendChild(choices);
+
+      if(currentQuiz.submitted){
+        const picked = currentQuiz.picks[idx];
+        const correct = qq.correctIndex;
+
+        [...choices.children].forEach((lbl, cidx)=>{
+          if(cidx === correct) lbl.classList.add("correct");
+          if(picked === cidx && picked !== correct) lbl.classList.add("wrong");
+          lbl.querySelector("input").disabled = true;
+        });
+
+        const exp = document.createElement("div");
+        exp.className = "small";
+        exp.style.marginTop = "10px";
+        const pickedText = picked == null ? "<i>(no answer selected)</i>" : escapeHtml(qq.choices[picked]);
+        exp.innerHTML = `<b>Explanation:</b> ${escapeHtml(qq.explanation)}<br/>
+                         <span class="small">Your answer: ${pickedText}</span>`;
+        qCard.appendChild(exp);
+      }
+
+      qWrap.appendChild(qCard);
+    });
+
+    quizArea.appendChild(qWrap);
+
+    const actions = document.createElement("div");
+    actions.className = "actions noPrint";
+
+    const submitBtn = document.createElement("button");
+    submitBtn.className = "btn primary";
+    submitBtn.textContent = currentQuiz.submitted ? "Submitted" : "Submit & Autograde";
+    submitBtn.disabled = currentQuiz.submitted;
+    submitBtn.addEventListener("click", submitAttempt);
+
+    const retryBtn = document.createElement("button");
+    retryBtn.className = "btn";
+    retryBtn.textContent = "Retry (New Questions)";
+    retryBtn.addEventListener("click", startNewAttempt);
+
+    const viewBest = document.createElement("div");
+    viewBest.className = "pill";
+    const best = state.best[currentLevelId];
+    viewBest.innerHTML = `Best: <b>${best==null?"—":best+"%"}</b>`;
+
+    actions.appendChild(submitBtn);
+    actions.appendChild(retryBtn);
+    actions.appendChild(viewBest);
+    quizArea.appendChild(actions);
+
+    if(currentQuiz.submitted){
+      const res = currentQuiz.results;
+      const passed = res.pct >= MASTERY;
+
+      const box = document.createElement("div");
+      box.className = "notice " + (passed ? "ok" : "bad");
+      box.style.marginTop = "14px";
+      box.innerHTML = `
+        <div class="row">
+          <div><b>Score:</b> ${res.correct}/${res.total} (${Math.round(res.pct*100)}%)</div>
+          <div><b>${passed ? "Mastery achieved ✅" : "Not yet — keep going 💪"}</b></div>
+        </div>
+        <div class="small" style="margin-top:6px;">
+          ${passed
+            ? (currentLevelId === 8 ? "You passed the Boss Level. View your final score report!"
+                                   : "Next level unlocked (if there is one). You can still retry to improve your best score.")
+            : "Hit the mastery threshold to unlock the next level."
+          }
+        </div>
+      `;
+      quizArea.appendChild(box);
+
+      const nav = document.createElement("div");
+      nav.className = "actions noPrint";
+
+      if(passed && currentLevelId < 8){
+        const nextBtn = document.createElement("button");
+        nextBtn.className = "btn primary";
+        nextBtn.textContent = "Go to Next Level →";
+        nextBtn.addEventListener("click", ()=> selectLevel(currentLevelId + 1));
+        nav.appendChild(nextBtn);
+      }
+
+      if(passed && currentLevelId === 8){
+        const reportBtn = document.createElement("button");
+        reportBtn.className = "btn primary";
+        reportBtn.textContent = "View Final Score Report 🧾";
+        reportBtn.addEventListener("click", renderFinalReport);
+        nav.appendChild(reportBtn);
+      }
+
+      const stayBtn = document.createElement("button");
+      stayBtn.className = "btn";
+      stayBtn.textContent = "Review & Retry";
+      stayBtn.addEventListener("click", startNewAttempt);
+
+      nav.appendChild(stayBtn);
+      quizArea.appendChild(nav);
+    }
+  }
+
+  function submitAttempt(){
+    currentQuiz.submitted = true;
+
+    let correct = 0;
+    const total = currentQuiz.questions.length;
+    currentQuiz.questions.forEach((qq, idx)=>{
+      const picked = currentQuiz.picks[idx];
+      if(picked === qq.correctIndex) correct++;
+    });
+
+    const pct = total === 0 ? 0 : correct / total;
+    currentQuiz.results = { correct, total, pct };
+
+    const pct100 = Math.round(pct*100);
+    const best = state.best[currentLevelId];
+    if(best == null || pct100 > best) state.best[currentLevelId] = pct100;
+
+    const passed = pct >= MASTERY;
+    if(passed && state.unlocked === currentLevelId && currentLevelId < 8){
+      state.unlocked = currentLevelId + 1;
+    }
+
+    state.attempts.push({
+      ts: new Date().toISOString(),
+      studentName: state.studentName,
+      levelId: currentLevelId,
+      score: correct,
+      total,
+      pct: Math.round(pct*100),
+      passed
+    });
+
+    saveState();
+    renderTop();
+    renderLevels();
+    renderQuiz();
+  }
+
+  function computeOverall(){
+    let sum = 0;
+    for(let i=1;i<=8;i++) sum += (state.best[i] == null ? 0 : state.best[i]);
+    return Math.round(sum / 8);
+  }
+
+  // ✅ UPDATED: name + overall side-by-side, big + bold color
+  function renderFinalReport(){
+    const overall = computeOverall();
+    const name = state.studentName ?? "";
+
+    levelTitle.textContent = "Final Score Report";
+
+    // Put big name + big overall at the TOP (this prints nicely)
+    levelMeta.innerHTML = `
+      <div class="reportHeader">
+        <div>
+          <div class="small">Student</div>
+          <div class="nameBig">${escapeHtml(name)}</div>
+        </div>
+        <div style="min-width:220px;">
+          <span class="scoreLabel">Overall Score</span>
+          <div class="scoreBig">${overall}%</div>
+        </div>
+      </div>
+      <div class="small" style="margin-top:8px;">
+        Scores below are your <b>best score</b> for each level on this device.
+      </div>
+    `;
+
+    quizArea.innerHTML = "";
+
+    const grid = document.createElement("div");
+    grid.className = "scoresGrid";
+
+    for(let i=1;i<=8;i++){
+      const lvl = levels.find(x=>x.id===i);
+      const best = state.best[i] == null ? 0 : state.best[i];
+
+      const left = document.createElement("div");
+      left.className = "cell";
+      left.innerHTML = `<b>Level ${i}</b> — ${escapeHtml(lvl.topic)}`;
+
+      const right = document.createElement("div");
+      right.className = "cell right";
+      right.textContent = `${best}%`;
+
+      grid.appendChild(left);
+      grid.appendChild(right);
+    }
+
+    quizArea.appendChild(grid);
+
+    const actions = document.createElement("div");
+    actions.className = "actions noPrint";
+
+    const printBtn = document.createElement("button");
+    printBtn.className = "btn primary";
+    printBtn.textContent = "Print / Save as PDF";
+    printBtn.addEventListener("click", ()=> window.print());
+
+    const backBtn = document.createElement("button");
+    backBtn.className = "btn";
+    backBtn.textContent = "Back to Levels";
+    backBtn.addEventListener("click", ()=> selectLevel(8));
+
+    actions.appendChild(printBtn);
+    actions.appendChild(backBtn);
+    quizArea.appendChild(document.createElement("div")).className = "divider";
+    quizArea.appendChild(actions);
+  }
+
+  function shuffle(arr){
+    for(let i=arr.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+  function shuffleChoicesPreserveAnswer(question){
+  // question: { stem, choices[], correctIndex, explanation, codeBlock }
+  const indexed = question.choices.map((text, idx) => ({ text, idx }));
+  shuffle(indexed); // uses your existing shuffle(arr)
+
+  const newChoices = indexed.map(x => x.text);
+  const newCorrectIndex = indexed.findIndex(x => x.idx === question.correctIndex);
+
+  return {
+    ...question,
+    choices: newChoices,
+    correctIndex: newCorrectIndex
+  };
+}
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[m]));
+  }
+
+  function applyTheme(){
+    document.body.classList.toggle("light", state.theme === "light");
+  }
+  document.getElementById("toggleTheme").addEventListener("click", ()=>{
+    state.theme = (state.theme === "light") ? "dark" : "light";
+    applyTheme();
+    saveState();
+  });
+
+  document.getElementById("resetAll").addEventListener("click", ()=>{
+    if(!confirm("Reset all progress AND name on this device?")) return;
+    state = structuredClone(defaultState);
+    saveState();
+    applyTheme();
+    selectLevel(1);
+    openNameModal();
+  });
+
+  // Teacher mode (kept as-is)
+  const modalBack = document.getElementById("modalBack");
+  const teacherLog = document.getElementById("teacherLog");
+  const closeModal = document.getElementById("closeModal");
+  const exportJson = document.getElementById("exportJson");
+  const copyJson = document.getElementById("copyJson");
+  const resetAttempts = document.getElementById("resetAttempts");
+
+  function openTeacher(){
+    refreshTeacherLog();
+    modalBack.style.display = "flex";
+  }
+  function closeTeacher(){ modalBack.style.display = "none"; }
+  closeModal.addEventListener("click", closeTeacher);
+  modalBack.addEventListener("click", (e)=>{ if(e.target === modalBack) closeTeacher(); });
+
+  function refreshTeacherLog(){
+    const summary = {
+      studentName: state.studentName,
+      unlocked: state.unlocked,
+      best: state.best.slice(1),
+      overall: computeOverall(),
+      attemptsCount: state.attempts.length
+    };
+    teacherLog.textContent =
+`=== STUDENT ===
+Name: ${summary.studentName ?? "(not set)"}
+
+=== PROGRESS SUMMARY ===
+Unlocked: ${summary.unlocked}/8
+Overall: ${summary.overall}%
+Best scores: ${summary.best.map((v,i)=>`L${i+1}:${v==null?"—":v+"%"}`).join("  ")}
+Attempts logged: ${summary.attemptsCount}
+
+=== ATTEMPTS (most recent last) ===
+${state.attempts.map(a=>`${a.ts}  ${a.studentName || ""}  L${a.levelId}  ${a.score}/${a.total} (${a.pct}%)  ${a.passed?"PASS":"TRY AGAIN"}`).join("\n") || "(none yet)"}`
+  }
+
+  exportJson.addEventListener("click", ()=>{
+    const blob = new Blob([JSON.stringify(state, null, 2)], {type:"application/json"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "bytebistro_progress.json";
+    a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  });
+
+  copyJson.addEventListener("click", async ()=>{
+    try{
+      await navigator.clipboard.writeText(JSON.stringify(state, null, 2));
+      alert("Copied progress JSON to clipboard.");
+    }catch{
+      alert("Could not access clipboard in this browser. Use Export instead.");
+    }
+  });
+
+  resetAttempts.addEventListener("click", ()=>{
+    if(!confirm("Clear attempt history (scores/unlocks stay)?")) return;
+    state.attempts = [];
+    saveState();
+    refreshTeacherLog();
+  });
+
+  let buffer = "";
+  window.addEventListener("keydown", (e)=>{
+    if(e.key.length !== 1) return;
+    buffer = (buffer + e.key).slice(-7);
+    if(buffer.toUpperCase() === "TEACHER") openTeacher();
+  });
+
+  applyTheme();
+  renderLevels();
+  renderTop();
+
+  if(!state.studentName){
+    openNameModal();
+  } else {
+    selectLevel(Math.min(currentLevelId, state.unlocked));
+  }
+})();
+</script>
+</body>
+</html>
+```
